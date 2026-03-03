@@ -28,3 +28,4 @@ def limpiar_rapido(file_path):
 
 ruta_e = r'Asousados_15_12_2025.xlsx'
 limpiar_rapido(ruta_e)
+
