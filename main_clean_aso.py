@@ -1,7 +1,7 @@
 import openpyxl
 from openpyxl.styles import Color
 
-def limpiar_celdas_blancas_server(file_path, output_path):
+def limpiar_celdas_blancas(file_path, output_path):
     wb = openpyxl.load_workbook(file_path)
     
     COLOR_BLANCO = 'FFFFFFFF'
@@ -23,4 +23,4 @@ def limpiar_celdas_blancas_server(file_path, output_path):
     wb.save(output_path)
     print(f"Archivo guardado en: {output_path}")
 
-limpiar_celdas_blancas_server('Asousados_15_12_2025.xlsx', 'Asousados_15_12_2025_clean.xlsx')
+# limpiar_celdas_blancas('Asousados_15_12_2025.xlsx', 'Asousados_15_12_2025_clean.xlsx')

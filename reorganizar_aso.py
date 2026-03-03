@@ -3,8 +3,39 @@ import numpy as np
 import openpyxl
 from asig_cod_fase import tf_idf_assign
 from datetime import datetime
+import re
+from datetime import datetime
+import openpyxl
+from openpyxl.styles import Color
+import io
+
+def limpiar_celdas_blancas(file_path):
+    wb = openpyxl.load_workbook(file_path)
+    
+    COLOR_BLANCO = 'FFFFFFFF'
+
+    for sheet_name in wb.sheetnames:
+        ws = wb[sheet_name]
+        print(f"Procesando hoja: {sheet_name}")
+        
+        for row in ws.iter_rows():
+            for cell in row:
+                if cell.font and cell.font.color:
+                    color = cell.font.color
+                    
+                    if color.type == 'rgb' and color.rgb == COLOR_BLANCO:
+                        cell.value = None
+                    elif color.type == 'theme' and color.theme == 0: 
+                        cell.value = None
+
+    virtual_file = io.BytesIO()
+    wb.save(virtual_file)
+    virtual_file.seek(0)  # Volver al inicio del "archivo" para poder leerlo
+    return virtual_file
 
 def aso_f(camino, anno_actual=False):
+
+
     file_path = camino
     xls = pd.ExcelFile(file_path)
 
@@ -86,10 +117,7 @@ def aso_f(camino, anno_actual=False):
             df_long_2025 = df_long[mask_2025].drop_duplicates(subset=["Marca", "Referencia", "Modelo", "Estado"])
             df_long_otros = df_long[~mask_2025]
 
-            df_long = pd.concat([df_long_2025, df_long_otros], ignore_index=True)
-
-        
-        
+            df_long = pd.concat([df_long_2025, df_long_otros], ignore_index=True)  
 
         df_final = pd.concat([df_final, df_long], ignore_index=True)
 
@@ -102,17 +130,62 @@ def aso_f(camino, anno_actual=False):
     df_final['COMPANIA'] = 'Asousados'
     df_final['KILOMETRAJE'] = 0
     
-    
-
     return df_final
 
-str_path = r'../Asousados_15_12_2025_3.xlsx'
-df_final = aso_f(str_path, anno_actual=False)
-# ........................................................................................
-# Faltaria automatizar la fecha, que venga del nombre que comparten el archivo
-# ........................................................................................
-fecha_dt = datetime(2023, 12, 7)
-# print(fecha_dt.date())
-df_final['FECHA_VENTA'] = fecha_dt
-# df_final.to_csv(f'aso_{fecha_dt}.csv', index=False)
-df_final.to_excel(f'../aso_{str(fecha_dt.date())}_clean.xlsx', index=False)
+
+
+def extraer_fecha_archivo(nombre_archivo):
+    meses = {
+        "enero": "01", "febrero": "02", "marzo": "03", "abril": "04",
+        "mayo": "05", "junio": "06", "julio": "07", "agosto": "08",
+        "septiembre": "09", "octubre": "10", "noviembre": "11", "diciembre": "12"
+    }
+
+    patron = r"(\w+)\s+(\d{1,2})\s+de\s+(\d{4})"
+    match = re.search(patron, nombre_archivo, re.IGNORECASE)
+
+    if match:
+        nombre_mes = match.group(1).lower()
+        dia = int(match.group(2).zfill(2))
+        anio = int(match.group(3))
+        
+        mes_num = int(meses.get(nombre_mes))
+        
+        if mes_num:
+            # return f"{dia}/{mes_num}/{anio}"
+            list_f = [dia, mes_num, anio] 
+            return list_f
+    
+    return "Fecha no encontrada"
+
+
+# # --- Pruebas ---
+# archivos = [
+#     "Depreciaciones asousados estimada Diciembre 15 de 2025.xlsx",
+#     "Depreciaciones asousados estimada Enero 20 de 2026.xlsx",
+#     "Reporte de prueba Febrero 5 de 2024.xlsx"
+# ]
+
+# for a in archivos:
+#     print(f"Original: {a} -> Resultado: {extraer_fecha_archivo(a)}")
+
+if __name__ == '__main__':
+
+    str_path = r'Depreciaciones asousados estimada Diciembre 15 de 2025.xlsx'
+    # str_clean = r'Asousados_15_12_2025_clean.xlsx'
+    str_clean = limpiar_celdas_blancas(str_path)
+    df_final = aso_f(str_clean, anno_actual=False)
+    l_fechas = extraer_fecha_archivo(str_path)
+    # ........................................................................................
+    # Faltaria automatizar la fecha, que venga del nombre que comparten el archivo
+    # ........................................................................................
+    try:
+        fecha_dt = datetime(l_fechas[2], l_fechas[1], l_fechas[0])
+    except:
+        print('No se pudo obtener la fecha por el nombre, por lo que se va a poner la fecha de hoy ')
+        fecha_dt = datetime.today()
+    # -------------------------------------------------------------------------------------------
+    # print(fecha_dt.date())
+    df_final['FECHA_VENTA'] = fecha_dt
+    # df_final.to_csv(f'aso_{fecha_dt}.csv', index=False)
+    df_final.to_excel(f'../aso_{str(fecha_dt.date())}_clean_try2.xlsx', index=False)
