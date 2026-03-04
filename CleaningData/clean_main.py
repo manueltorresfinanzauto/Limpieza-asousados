@@ -49,27 +49,9 @@ def doble_ubi(df, ubicacion_doble):
         pass
 
 
-def main():
+def clean_total(df_ori, name_out, Asousados = False, ubicacion_doble=False):
 
-    path_f = '/home/manueltorres/analitica-garaje/brdp_15_05.xlsx'
-    df = pd.read_excel(path_f)
-    if 'Valor alistamiento' in df.columns:
-        df['Observaciones'] = df['Observaciones'] + ' ' + df['Valor alistamiento'].astype(str)
-    Asousados = True
-    if Asousados: 
-        df = df.rename(columns={'REFERENCIA2_FASECOLDA' : 'Referencia'})
-
-
-    ubicacion_doble = False
-    if ubicacion_doble:
-        df = doble_ubi(df, ubicacion_doble)
-    
-    df = max_cleaner(df)
-    df.to_csv('../brdp_15_05_clean.csv', index=False)
-
-def clean_total(path_f, name_out, Asousados = False, ubicacion_doble=False):
-
-    df = pd.read_excel(path_f)
+    df = df_ori
     # df_or = df.copy()
     if 'Valor alistamiento' and 'Observaciones' in df.columns:
         df['Observaciones'] = df['Observaciones'] + ' ' + df['Valor alistamiento'].astype(str)

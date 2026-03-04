@@ -158,6 +158,27 @@ def extraer_fecha_archivo(nombre_archivo):
     
     return "Fecha no encontrada"
 
+def asousados_organizar():
+    str_path = r'Depreciaciones asousados estimada Diciembre 15 de 2025.xlsx'
+    # str_clean = r'Asousados_15_12_2025_clean.xlsx'
+    str_clean = limpiar_celdas_blancas(str_path)
+    df_final = aso_f(str_clean, anno_actual=False)
+    l_fechas = extraer_fecha_archivo(str_path)
+    # ........................................................................................
+    # Faltaria automatizar la fecha, que venga del nombre que comparten el archivo
+    # ........................................................................................
+    try:
+        fecha_dt = datetime(l_fechas[2], l_fechas[1], l_fechas[0])
+    except:
+        print('No se pudo obtener la fecha por el nombre, por lo que se va a poner la fecha de hoy ')
+        fecha_dt = datetime.today()
+    # -------------------------------------------------------------------------------------------
+    # print(fecha_dt.date())
+    df_final['FECHA_VENTA'] = fecha_dt
+
+    return df_final
+
+
 
 # # --- Pruebas ---
 # archivos = [
