@@ -29,4 +29,4 @@ def ejecutar_limpieza(n):
         print("Opción no válida. Por favor elige 1, 2 o 3.")
 
 
-ejecutar_limpieza(3)
+ejecutar_limpieza(1)

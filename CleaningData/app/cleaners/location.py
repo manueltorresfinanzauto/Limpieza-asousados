@@ -1,7 +1,7 @@
 import numpy as np 
 from sqlalchemy import create_engine, text
 import pandas as pd
-from CleaningData.config.sqlacces import connection_str_dw_fz_g
+from CleaningData.config.sqlacces import connection_str
 from unidecode import unidecode
 import re
 
@@ -141,7 +141,7 @@ class Location:
     @classmethod
     def tabla_territorio(cls):
 
-        connect_str: str = connection_str_dw_fz_g
+        connect_str: str = connection_str
         engine = create_engine(connect_str)
         query = cls._query_sql()
         df = pd.read_sql(query, engine)
