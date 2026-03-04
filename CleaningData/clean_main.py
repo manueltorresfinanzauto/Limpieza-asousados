@@ -49,7 +49,7 @@ def doble_ubi(df, ubicacion_doble):
         pass
 
 
-def clean_total(df_ori, name_out, Asousados = False, ubicacion_doble=False):
+def clean_total(df_ori,  Asousados = False, ubicacion_doble=False):
 
     df = df_ori
     # df_or = df.copy()
@@ -61,8 +61,8 @@ def clean_total(df_ori, name_out, Asousados = False, ubicacion_doble=False):
     if ubicacion_doble:
         df = doble_ubi(df, ubicacion_doble)
     df = max_cleaner(df)
-    out_pa = f'../{name_out}'
-    df.to_csv(out_pa, index=False)
+    # out_pa = f'../{name_out}'
+    # df.to_csv(out_pa, index=False)
     # df['Placas'] = df_or['Placas']
     return df
 

@@ -87,6 +87,7 @@ def limpieza_v2(path_csv):
     engine = create_engine(connect_str)
     query = query_sql()
     df_v2 = pd.read_sql(query, engine)
+    engine.dispose()
     print(df_v2.shape)
     df_v2.loc[df_v2['ESTADO_VENTA'] == 'Nuevos', 'KILOMETRAJE'] = 0
     df_v2.loc[df_v2['COD_FASECOLDA'].isnull(), 'COD_FASECOLDA'] = df_v2['COD_FASECOLDA_APROX']
@@ -167,7 +168,7 @@ def limpieza_v2(path_csv):
     df_v2.drop(['Id_vehiculo', 'Placa', 'Vin', 'Compania', 'Marca_or', 'Linea_or', 'Cod_fasecolda_aprox', 'Proximidad_cod_fasecolda','Codigo'],
     axis='columns', inplace=True)
 
-
+    # ------------ toca modificarlo
     df_v2.to_csv('../output_df_v2_07_01_2026.csv', index=False)
     df_v2_h = df_v2.sort_values(['Kilometraje'], ascending=[False])
     df_v2_h = df_v2_h.head(100) 
@@ -179,6 +180,8 @@ def limpieza_v2(path_csv):
     list_col = ['Cod_fasecolda', 'Marca', 'Linea', 'Referencia', 'Modelo', 'Kilometraje', 'Descripcion','Descripcion_int', 'Gama','Gama_int', 'Demanda', 'Popularidad', 'Combustible','Combustible_int', 'Estado_vehiculo', 'Estado_vehiculo_int', 'Fecha_venta', 'Year', 'Month','Blindaje', 'Ubicacion', 'Ubicacion_int', 'Precio']
 
     list_col = list(map(lambda x: x.lower(), list_col))
+    
+    return df_v2
 
 
 
