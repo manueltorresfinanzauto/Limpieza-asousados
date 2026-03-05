@@ -17,47 +17,7 @@ class Demanda:
         Returns:
             str: The SQL query
         """
-        query  = """ 
-                WITH GroupedSales AS (
-                    -- Assign rolling 12-month group numbers dynamically based on Fecha
-                    SELECT 
-                        Marca,
-                        Linea,
-                        Estado_vehiculo,
-                        Fecha,
-                        DATEDIFF(MONTH, Fecha, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) / 12 + 1 AS period_group
-                    FROM [Analitica].[dbo].[Runt_Historico]
-                ),
-                SalesByPeriod AS (
-                    -- Count sales per group, house type, reference, and condition
-                    SELECT 
-                        period_group,
-                        Marca,
-                        Linea,
-                        Estado_vehiculo,
-                        COUNT(*) AS sales_count
-                    FROM GroupedSales
-                    GROUP BY period_group, Marca, Linea, Estado_vehiculo
-                ),
-                TotalSalesPerPeriod AS (
-                    -- Compute total sales per period
-                    SELECT 
-                        period_group,
-                        SUM(sales_count) AS total_sales
-                    FROM SalesByPeriod
-                    GROUP BY period_group
-                )
-                SELECT 
-                    CAST(s.period_group AS VARCHAR) AS Group_number,
-                    t.total_sales AS Total_Sales,
-                    s.Marca,
-                    s.Linea,
-                    s.Estado_vehiculo,
-                    s.sales_count AS Sales,
-                    ROUND(100.0 * s.sales_count / NULLIF(t.total_sales, 0), 2) AS Percentage
-                FROM SalesByPeriod s
-                JOIN TotalSalesPerPeriod t ON s.period_group = t.period_group
-                ORDER BY s.period_group ASC, s.sales_count DESC;
+        query  = """ select * FROM [Analitica].[pri].[demanda_vehiculos]
 
                 """
         return query

@@ -19,6 +19,9 @@ if sistema == "Windows":
         driver = f'{pyodbc.drivers()[3]}'  # Ensure the correct driver is installed
 elif sistema == "Linux":
     driver = f'{pyodbc.drivers()[0]}'  # Ensure the correct driver is installed
-connection_str = f"mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}&TrustServerCertificate=yes"
+connection_str = f"mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}&Encrypt=yes&TrustServerCertificate=yes"
 
 print(pyodbc.drivers())
+
+database2 = os.environ['DB_DATABASE2']    # Name of your database
+connection_str_dw = f"mssql+pyodbc://{username}:{password}@{server}/{database2}?driver={driver}&TrustServerCertificate=yes"

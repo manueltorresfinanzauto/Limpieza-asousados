@@ -155,14 +155,19 @@ class Location:
         for municipio, nuevo_nivel in sabana.items():
             df.loc[(df['MPIO_CNMBR'] == municipio) & (df['Nivel_Castigo'] > nuevo_nivel), 'Nivel_Castigo'] = nuevo_nivel
         
-        df_zomac = pd.read_excel('/home/manueltorres/analitica-garaje/Gamas.xlsx', sheet_name='Zomac PDET')
+        # df_zomac = pd.read_excel('/home/manueltorres/analitica-garaje/Gamas.xlsx', sheet_name='Zomac PDET')
+        engine1 = create_engine(connection_str)
+        query1 = "select * FROM [Analitica].[pri].[Gamas]"
+        df_zomac = pd.read_sql(query1, engine1)
+        # df_pu = pd.read_csv('CleaningData/app/cleaners/municipios_punishment.csv')
+        engine1.dispose()
         df_zomac['Zomac'] = df_zomac['Zomac'].map({'ZOMAC' : 1})
         df = df.merge(df_zomac[['MPIO_CNMBR', 'DPTO_CNMBR']], on=['MPIO_CNMBR', 'DPTO_CNMBR'], how='left', indicator=True)
         df.loc[df["_merge"] == "both", "Nivel_Castigo"] = 3  # Si está en df_zomac, asignar nivel 3
         df.drop(columns=["_merge", "nivel_tipo"], inplace=True) 
 
-        df.to_csv('../municipios_punishment.csv', index=False)
-        df.to_excel('../MPIOS_MGN_2021_Names.xlsx')
+        # df.to_csv('../municipios_punishment.csv', index=False)
+        # df.to_excel('../MPIOS_MGN_2021_Names.xlsx')
 
         return df
     
@@ -170,9 +175,11 @@ class Location:
     
     @classmethod
     def location_punish(cls, df):
-        
-        df_pu = pd.read_csv('CleaningData/app/cleaners/municipios_punishment.csv')
-    
+        engine1 = create_engine(connection_str)
+        query1 = "select * FROM [Analitica].[pri].[municipios_punishment]"
+        df_pu = pd.read_sql(query1, engine1)
+        # df_pu = pd.read_csv('CleaningData/app/cleaners/municipios_punishment.csv')
+        engine1.dispose()
         print(cls.remplace("BOGOTÁ, D.C."))
         df['Ubicacion_simple'] = df['Ubicacion'].apply(cls.remplace)
         # print(df[['Ubicacion', 'Ubicacion_simple']].head())

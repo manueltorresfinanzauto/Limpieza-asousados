@@ -1,12 +1,18 @@
 import pandas as pd 
 import numpy as np
-
+from sqlalchemy import create_engine, text
+from CleaningData.config.sqlacces import connection_str
 
 class Gamas:
 
     @staticmethod
     def call_df_gama():
-        df_g = pd.read_excel('CleaningData/app/cleaners/Gamas.xlsx', sheet_name='Gamas 343')
+        engine1 = create_engine(connection_str)
+        query1 = "select * FROM [Analitica].[pri].[Gamas]"
+        df_g = pd.read_sql(query1, engine1)
+        # df_pu = pd.read_csv('CleaningData/app/cleaners/municipios_punishment.csv')
+        engine1.dispose()
+        # df_g = pd.read_excel('CleaningData/app/cleaners/Gamas.xlsx', sheet_name='Gamas 343')
         return df_g
     
     @classmethod

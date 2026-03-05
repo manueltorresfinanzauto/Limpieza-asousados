@@ -24,9 +24,10 @@ def ejecutar_limpieza(n):
         df = funcion()
         df_f = clean_total(df)
         df_f.to_excel('prueba1.xlsx', index=False)
+        # Filtramos el DF donde la columna 'A' tiene valores nulos
         return df_f
     else:
         print("Opción no válida. Por favor elige 1, 2 o 3.")
 
 
-ejecutar_limpieza(1)
+ejecutar_limpieza(3)

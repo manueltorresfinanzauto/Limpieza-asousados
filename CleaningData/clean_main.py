@@ -67,6 +67,6 @@ def clean_total(df_ori,  Asousados = False, ubicacion_doble=False):
     return df
 
 
-if __name__=='__main__':
+# if __name__=='__main__':
 
-    main()
+#     a = 1

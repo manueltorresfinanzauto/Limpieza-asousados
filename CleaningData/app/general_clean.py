@@ -118,10 +118,9 @@ def max_cleaner(df):
     column_map = {
         'Cod_fasecolda': ['Codigo fasecolda', 'Codigo_fasecolda', 'Codigo', 'codigo_fasecolda', 'codigo fasecolda', 'Codigofasecolda'],
         'Descripcion': ['Observaciones'],
-        'Fecha_venta': ['Fecha del pricing', 'Fecha de pricing', 'Fecha pricing', 'Fecha de inspección', 'Fecha de inspeccion', 'Fecha de inspección', 'Fecha'],
+        'Fecha_venta': ['Fecha del pricing', 'Fecha de pricing', 'Fecha pricing', 'Fecha de inspección', 'Fecha de inspeccion', 'Fecha de inspección', 'Fecha', 'Fecha_de_Inspeccion'],
         'Pricing': ['Precio', 'PRECIO VENTA', 'PRECIO_VENTA', 'PRECIO_VENTA', 'Precio_venta', 'Precio venta'], 
         'Descripcion' : ['Observaciones'], 
-        'Estado_vehiculo' : ['Estado', 'Estado_venta'],
         'Modelo' : ['ANIO_MODELO', 'ANIO MODELO', 'Anio_modelo', 'Anio modelo']
     }
     print(df.shape)
@@ -133,7 +132,14 @@ def max_cleaner(df):
                 break
     print(df.columns.tolist())
     print('Remove motos')
-    
+    df_vacios = df[df['Fecha_venta'].isnull()]
+
+        # Imprimimos la dimensión (filas, columnas)
+    print(f"Dimensiones de filas con 'A' vacío: {df_vacios.shape}")
+
+        # Si solo quieres el número de filas:
+    print(f"Total de registros con 'A' vacío: {df_vacios.shape[0]}")
+
     # df = Motos.find_motos(df)
     df['Cod_fasecolda'] = df['Cod_fasecolda'].fillna(99999999)
     print(df.shape)
@@ -167,7 +173,7 @@ def max_cleaner(df):
     df.loc[df['Kilometraje'].isna(), 'Kilometraje'] = df.loc[df['Kilometraje'].isna(), 'Modelo'].apply(mean_km_f)
     print(df.shape)
 
-
+    print(df[['Estado_vehiculo']].head(2))
     print('Applying estado')
     df = estado_veh(df)
     print(df.shape)
